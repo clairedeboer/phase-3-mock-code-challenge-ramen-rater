@@ -42,7 +42,9 @@ const findAndRenderDetail = (event) => {
   restaurantDetail.textContent = ramen.restaurant;
 
   formRating.value = ramen.rating;
+  // formRating.dataset.id = ramen.id
   formComment.textContent = ramen.comment;
+  // formComment.dataset.id = ramen.id
 
   ramenDetailDiv.append(imageDetail);
   ramenDetailDiv.append(nameDetail);
@@ -50,11 +52,13 @@ const findAndRenderDetail = (event) => {
 
   ramenRatingForm.append(formRating);
   ramenRatingForm.append(formComment);
+  // ramenRatingForm.dataset.id = ramen.id
 };
 
 ramenMenuDiv.addEventListener("click", findAndRenderDetail);
 
 const updateRatingComment = (updatedRatingComment) => {
+  console.log(updatedRatingComment)
   return fetch(`http://localhost:3000/ramens/${updatedRatingComment.id}`, {
     method: "PATCH",
     headers: {
@@ -68,6 +72,7 @@ const updateRatingComment = (updatedRatingComment) => {
 };
 
 ramenRatingForm.addEventListener("submit", (event) => {
+  console.log(event)
   event.preventDefault();
 
   const ratingInput = event.target.rating.value;
@@ -79,7 +84,11 @@ ramenRatingForm.addEventListener("submit", (event) => {
   };
 
   updateRatingComment(rating)
-  .then((ramenData) => {findAndRenderDetail();
+  .then((ramenData) => {renderUpdatedRatingComment(rating);
   });
 });
+
+const renderUpdatedRatingComment = (rating) => {
+  
+}
 
