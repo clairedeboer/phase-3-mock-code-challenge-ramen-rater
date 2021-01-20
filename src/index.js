@@ -48,8 +48,38 @@ const findAndRenderDetail = (event) => {
   ramenDetailDiv.append(nameDetail);
   ramenDetailDiv.append(restaurantDetail);
 
-  ramenRatingForm.append(formRating)
-  ramenRatingForm.append(formComment)
+  ramenRatingForm.append(formRating);
+  ramenRatingForm.append(formComment);
 };
 
 ramenMenuDiv.addEventListener("click", findAndRenderDetail);
+
+const updateRatingComment = (updatedRatingComment) => {
+  return fetch(`http://localhost:3000/ramens/${updatedRatingComment.id}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      rating: updatedRatingComment.rating,
+      comment: updatedRatingComment.comment,
+    }),
+  }).then((response) => response.json());
+};
+
+ramenRatingForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  const ratingInput = event.target.rating.value;
+  const commentInput = event.target.comment.value;
+
+  const rating = {
+    rating: ratingInput,
+    comment: commentInput,
+  };
+
+  updateRatingComment(rating)
+  .then((ramenData) => {findAndRenderDetail();
+  });
+});
+
