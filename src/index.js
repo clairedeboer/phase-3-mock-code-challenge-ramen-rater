@@ -33,7 +33,7 @@ const renderRamenImage = (ramen) => {
 };
 
 const findAndRenderDetail = (event) => {
-  const ramenId = event.target.dataset.id;
+  ramenId = event.target.dataset.id;
   const ramen = ramenJSON.find(
     (ramenObj) => String(ramenObj.id) === String(ramenId)
   );
@@ -42,9 +42,7 @@ const findAndRenderDetail = (event) => {
   restaurantDetail.textContent = ramen.restaurant;
 
   formRating.value = ramen.rating;
-  // formRating.dataset.id = ramen.id
   formComment.textContent = ramen.comment;
-  // formComment.dataset.id = ramen.id
 
   ramenDetailDiv.append(imageDetail);
   ramenDetailDiv.append(nameDetail);
@@ -52,13 +50,32 @@ const findAndRenderDetail = (event) => {
 
   ramenRatingForm.append(formRating);
   ramenRatingForm.append(formComment);
-  // ramenRatingForm.dataset.id = ramen.id
-};
+
+  ramenRatingForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    ramen.rating = event.target.rating.value;
+    ramen.comment = event.target.comment.value;
+
+    updateRatingComment(ramen).then((ramenData) => {
+      renderUpdatedRatingComment(ramenData);
+    });
+  });
+}; 
 
 ramenMenuDiv.addEventListener("click", findAndRenderDetail);
 
+const renderUpdatedRatingComment = (ramenData) => {
+  formRating.value = ramenData.rating;
+  formComment.textContent = ramenData.comment;
+
+  ramenRatingForm.append(formRating);
+  ramenRatingForm.append(formComment);
+};
+
+
+
 const updateRatingComment = (updatedRatingComment) => {
-  console.log(updatedRatingComment)
   return fetch(`http://localhost:3000/ramens/${updatedRatingComment.id}`, {
     method: "PATCH",
     headers: {
@@ -70,25 +87,3 @@ const updateRatingComment = (updatedRatingComment) => {
     }),
   }).then((response) => response.json());
 };
-
-ramenRatingForm.addEventListener("submit", (event) => {
-  console.log(event)
-  event.preventDefault();
-
-  const ratingInput = event.target.rating.value;
-  const commentInput = event.target.comment.value;
-
-  const rating = {
-    rating: ratingInput,
-    comment: commentInput,
-  };
-
-  updateRatingComment(rating)
-  .then((ramenData) => {renderUpdatedRatingComment(rating);
-  });
-});
-
-const renderUpdatedRatingComment = (rating) => {
-  
-}
-
